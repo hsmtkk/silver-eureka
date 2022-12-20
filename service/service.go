@@ -28,6 +28,10 @@ func main() {
 	e.GET("/", hello)
 	e.GET("/healthz", healthz)
 
+	e.POST("/try", try)
+	e.POST("/confirm", confirm)
+	e.POST("/cancel", cancel)
+
 	// Start server
 	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", port)))
 }
@@ -39,6 +43,18 @@ func hello(c echo.Context) error {
 
 func healthz(ectx echo.Context) error {
 	return ectx.String(http.StatusOK, "OK")
+}
+
+func try(ectx echo.Context) error {
+	return ectx.String(http.StatusOK, "try")
+}
+
+func confirm(ectx echo.Context) error {
+	return ectx.String(http.StatusOK, "try")
+}
+
+func cancel(ectx echo.Context) error {
+	return ectx.String(http.StatusOK, "try")
 }
 
 func requiredEnv(name string) (string, error) {

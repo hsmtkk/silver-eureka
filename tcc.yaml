@@ -1,0 +1,66 @@
+---
+main:
+  steps:
+    - root:
+        try:
+          steps:
+            - try-phase:
+                parallel:
+                  branches:
+                    - try-flight-branch:
+                        steps:
+                          - try-flight:
+                              call: http.post
+                              args:
+                                auth:
+                                  type: OIDC
+                                url: https://flight-vijprl5s4q-uc.a.run.app/try
+
+                    - try-hotel-branch:
+                        steps:
+                          - try-hotel:
+                              call: http.post
+                              args:
+                                auth:
+                                  type: OIDC
+                                url: https://hotel-vijprl5s4q-uc.a.run.app/try
+            - confirm-phase:
+                parallel:
+                  branches:
+                    - confirm-flight-branch:
+                        steps:
+                          - confirm-flight:
+                              call: http.post
+                              args:
+                                auth:
+                                  type: OIDC
+                                url: https://flight-vijprl5s4q-uc.a.run.app/confirm
+                    - confirm-hotel-branch:
+                        steps:
+                          - confirm-hotel:
+                              call: http.post
+                              args:
+                                auth:
+                                  type: OIDC
+                                url: https://hotel-vijprl5s4q-uc.a.run.app/confirm
+        except:
+          steps:
+            - cancel-phase:
+                parallel:
+                  branches:
+                    - cancel-flight-branch:
+                        steps:
+                          - cancel-flight:
+                              call: http.post
+                              args:
+                                auth:
+                                  type: OIDC
+                                url: https://flight-vijprl5s4q-uc.a.run.app/cancel
+                    - cancel-hotel-branch:
+                        steps:
+                          - cancel-hotel:
+                              call: http.post                        
+                              args:
+                                auth:
+                                  type: OIDC
+                                url: https://hotel-vijprl5s4q-uc.a.run.app/cancel
