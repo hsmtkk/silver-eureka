@@ -31,16 +31,11 @@ steps:
       - --image=${_REGION}-docker.pkg.dev/${PROJECT_ID}/registry/service:${COMMIT_SHA}
       - --region=${_REGION}
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
-    id: tcc
     waitFor:
       - flight
       - hotel
-    script: |
-      FLIGHT_URL=`gcloud run services describe flight --region=${_REGION} --format=json | jq .status.address.url`
-      sed -i 's/@FLIGHT_URL@/${FLIGHT_URL}/' tcc.yaml
-      HOTEL_URL=`gcloud run services describe hotel --region=${_REGION} --format=json | jq .status.address.url`
-      sed -i 's/@HOTEL_URL@/${HOTEL_URL}/' tcc.yaml
-      cat tcc.yaml
-      gcloud workflows deploy tcc --location=${_REGION} --source=tcc.yaml
+    entrypoint: sh
+    args:
+      - tcc-workflow.sh
 substitutions:
   _REGION: us-central1

@@ -16,6 +16,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	name, err := requiredEnv("NAME")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	handler := newHandler(name)
 
 	// Echo instance
 	e := echo.New()
@@ -24,36 +30,37 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	// Routes
-	e.GET("/", hello)
-	e.GET("/healthz", healthz)
+	e.GET("/healthz", handler.healthz)
 
-	e.POST("/try", try)
-	e.POST("/confirm", confirm)
-	e.POST("/cancel", cancel)
+	e.POST("/try", handler.try)
+	e.POST("/confirm", handler.confirm)
+	e.POST("/cancel", handler.cancel)
 
 	// Start server
 	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", port)))
 }
 
-// Handler
-func hello(c echo.Context) error {
-	return c.String(http.StatusOK, "Hello, World!")
+type handler struct {
+	name string
 }
 
-func healthz(ectx echo.Context) error {
+func newHandler(name string) *handler {
+	return &handler{name}
+}
+
+func (h *handler) healthz(ectx echo.Context) error {
 	return ectx.String(http.StatusOK, "OK")
 }
 
-func try(ectx echo.Context) error {
+func (h *handler) try(ectx echo.Context) error {
 	return ectx.String(http.StatusOK, "try")
 }
 
-func confirm(ectx echo.Context) error {
+func (h *handler) confirm(ectx echo.Context) error {
 	return ectx.String(http.StatusOK, "try")
 }
 
-func cancel(ectx echo.Context) error {
+func (h *handler) cancel(ectx echo.Context) error {
 	return ectx.String(http.StatusOK, "try")
 }
 

@@ -51,7 +51,7 @@ class MyStack extends TerraformStack {
       template: {
         containers: [{
           env: [{
-            name: 'TYPE',
+            name: 'NAME',
             value: 'flight',
           }],
           image: 'us-docker.pkg.dev/cloudrun/container/hello',
@@ -81,38 +81,8 @@ class MyStack extends TerraformStack {
       template: {
         containers: [{
           env: [{
-            name: 'TYPE',
+            name: 'NAME',
             value: 'hotel',
-          }],
-          image: 'us-docker.pkg.dev/cloudrun/container/hello',
-          livenessProbe: {
-            httpGet: {
-              path: '/healthz',
-            },
-          },
-          startupProbe: {
-            httpGet: {
-              path: '/healthz',
-            },
-          },
-        }],
-        scaling: {
-          minInstanceCount: 0,
-          maxInstanceCount: 1,
-        },
-        serviceAccount: runner.email,
-      },
-    });
-
-    new google.cloudRunV2Service.CloudRunV2Service(this, 'car', {
-      ingress: 'INGRESS_TRAFFIC_INTERNAL_ONLY',
-      location: region,
-      name: 'car',
-      template: {
-        containers: [{
-          env: [{
-            name: 'TYPE',
-            value: 'car',
           }],
           image: 'us-docker.pkg.dev/cloudrun/container/hello',
           livenessProbe: {
