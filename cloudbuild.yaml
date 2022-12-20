@@ -7,6 +7,7 @@ steps:
       - --cache-ttl=168h
       - --destination=${_REGION}-docker.pkg.dev/${PROJECT_ID}/registry/service:${COMMIT_SHA}
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    id: flight
     waitFor: 
       - docker
     entrypoint: gcloud
@@ -18,6 +19,7 @@ steps:
       - --image=${_REGION}-docker.pkg.dev/${PROJECT_ID}/registry/service:${COMMIT_SHA}
       - --region=${_REGION}
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    id: hotel
     waitFor: 
       - docker
     entrypoint: gcloud
@@ -29,15 +31,16 @@ steps:
       - --image=${_REGION}-docker.pkg.dev/${PROJECT_ID}/registry/service:${COMMIT_SHA}
       - --region=${_REGION}
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
-    waitFor: 
-      - docker
-    entrypoint: gcloud
-    args:
-      - run
-      - deploy
-      - car
-      - --execution-environment=gen2
-      - --image=${_REGION}-docker.pkg.dev/${PROJECT_ID}/registry/service:${COMMIT_SHA}
-      - --region=${_REGION}
+    id: tcc
+    waitFor:
+      - flight
+      - hotel
+    script: |
+      FLIGHT_URL=`gcloud run services describe flight --region=${_REGION} --format=json | jq .status.address.url`
+      sed -i 's/@FLIGHT_URL@/${FLIGHT_URL}/' tcc.yaml
+      HOTEL_URL=`gcloud run services describe hotel --region=${_REGION} --format=json | jq .status.address.url`
+      sed -i 's/@HOTEL_URL@/${HOTEL_URL}/' tcc.yaml
+      cat tcc.yaml
+      gcloud workflows deploy tcc --location=${_REGION} --source=tcc.yaml
 substitutions:
   _REGION: us-central1

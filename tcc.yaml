@@ -14,7 +14,7 @@ main:
                               args:
                                 auth:
                                   type: OIDC
-                                url: https://flight-vijprl5s4q-uc.a.run.app/try
+                                url: @FLIGHT_URL@/try
 
                     - try-hotel-branch:
                         steps:
@@ -23,7 +23,7 @@ main:
                               args:
                                 auth:
                                   type: OIDC
-                                url: https://hotel-vijprl5s4q-uc.a.run.app/try
+                                url: @HOTEL_URL@/try
             - confirm-phase:
                 parallel:
                   branches:
@@ -34,7 +34,7 @@ main:
                               args:
                                 auth:
                                   type: OIDC
-                                url: https://flight-vijprl5s4q-uc.a.run.app/confirm
+                                url: @FLIGHT_URL@/confirm
                     - confirm-hotel-branch:
                         steps:
                           - confirm-hotel:
@@ -42,7 +42,7 @@ main:
                               args:
                                 auth:
                                   type: OIDC
-                                url: https://hotel-vijprl5s4q-uc.a.run.app/confirm
+                                url: @HOTEL_URL@/confirm
         except:
           steps:
             - cancel-phase:
@@ -55,7 +55,7 @@ main:
                               args:
                                 auth:
                                   type: OIDC
-                                url: https://flight-vijprl5s4q-uc.a.run.app/cancel
+                                url: @FLIGHT_URL@cancel
                     - cancel-hotel-branch:
                         steps:
                           - cancel-hotel:
@@ -63,4 +63,4 @@ main:
                               args:
                                 auth:
                                   type: OIDC
-                                url: https://hotel-vijprl5s4q-uc.a.run.app/cancel
+                                url: @HOTEL_URL@/cancel
