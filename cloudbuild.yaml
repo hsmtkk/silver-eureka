@@ -1,0 +1,43 @@
+---
+steps:
+  - name: gcr.io/kaniko-project/executor:latest
+    id: docker
+    args:
+      - --cache=true
+      - --cache-ttl=168h
+      - --destination=${_REGION}-docker.pkg.dev/${PROJECT_ID}/registry/service:${COMMIT_SHA}
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    waitFor: 
+      - docker
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - flight
+      - --execution-environment=gen2
+      - --image=${_REGION}-docker.pkg.dev/${PROJECT_ID}/registry/service:${COMMIT_SHA}
+      - --region=${_REGION}
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    waitFor: 
+      - docker
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - hotel
+      - --execution-environment=gen2
+      - --image=${_REGION}-docker.pkg.dev/${PROJECT_ID}/registry/service:${COMMIT_SHA}
+      - --region=${_REGION}
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    waitFor: 
+      - docker
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - car
+      - --execution-environment=gen2
+      - --image=${_REGION}-docker.pkg.dev/${PROJECT_ID}/registry/service:${COMMIT_SHA}
+      - --region=${_REGION}
+substitutions:
+  _REGION: us-central1
