@@ -57,12 +57,12 @@ class MyStack extends TerraformStack {
           image: 'us-docker.pkg.dev/cloudrun/container/hello',
           livenessProbe: {
             httpGet: {
-              path: '/healthz',
+              path: '/',
             },
           },
           startupProbe: {
             httpGet: {
-              path: '/healthz',
+              path: '/',
             },
           },
         }],
@@ -87,12 +87,12 @@ class MyStack extends TerraformStack {
           image: 'us-docker.pkg.dev/cloudrun/container/hello',
           livenessProbe: {
             httpGet: {
-              path: '/healthz',
+              path: '/',
             },
           },
           startupProbe: {
             httpGet: {
-              path: '/healthz',
+              path: '/',
             },
           },
         }],

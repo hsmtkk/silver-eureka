@@ -30,7 +30,7 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	e.GET("/healthz", handler.healthz)
+	e.GET("/", handler.healthz)
 
 	e.POST("/try", handler.try)
 	e.POST("/confirm", handler.confirm)
